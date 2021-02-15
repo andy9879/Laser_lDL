@@ -45,18 +45,42 @@ const int chipSelect = SDCARD_SS_PIN;
 
  int Rpin = 10;
 
+int laser = 13;
 void setup()
 {
   digitalWrite(Rpin,HIGH);
   pinMode(Rpin,OUTPUT);
   
-  pinMode(13, OUTPUT);
+  pinMode(laser, OUTPUT);
   digitalWrite(13, LOW);
 
   pinMode(A0, INPUT);
   
   SD.begin(chipSelect);
 
+
+
+
+
+
+
+
+  String dataString = "";//String(rtc.getYear()) + "/" +  String(rtc.getMonth()) + "/" + String(rtc.getDay()) + "_" + String(rtc.getHours()) +":"+ String(rtc.getMinutes()) +":"+ String(rtc.getSeconds) + "|";
+
+  for(int i = 0;i<10;i++){
+      dataString += String(analogRead(sensor)) + ",";
+      delay(10);
+      }
+
+  dataString += " ";
+  digitalWrite(laser, HIGH);
+  delay(3000);
+  
+
+  for(int i = 0;i<10;i++){
+      dataString += String(analogRead(sensor)) + ",";
+      delay(10);
+      }
 
   
   rtc.begin();
@@ -70,6 +94,11 @@ void setup()
   rtc.attachInterrupt(alarmMatch);
 
   rtc.standbyMode();
+
+
+
+
+  
 }
 
 void loop()
@@ -79,38 +108,5 @@ void loop()
 
 void alarmMatch()
 {
-  String dataString = "";//String(rtc.getYear()) + "/" +  String(rtc.getMonth()) + "/" + String(rtc.getDay()) + "_" + String(rtc.getHours()) +":"+ String(rtc.getMinutes()) +":"+ String(rtc.getSeconds) + "|";
-
-  for(int i = 0;i<10;i++){
-      dataString += String(analogRead(sensor)) + ",";
-      delay(1);
-      }
-
-  dataString += " ";
-  digitalWrite(13, HIGH);
-  delay(1000);
-  
-
-  for(int i = 0;i<10;i++){
-      dataString += String(analogRead(sensor)) + ",";
-      delay(1);
-      }
-
-    currentAlarm += 20;
-    if(currentAlarm >= 60){
-      currentAlarm = 0;  
-      }
-    rtc.setAlarmMinutes(currentAlarm);
-
-    dataString += "|" + String(currentAlarm);
-
-    File dataFile = SD.open("datalog.txt", FILE_WRITE);
-    
-    dataFile.println(dataString);
-    dataFile.close();
-    digitalWrite(13, LOW);
-    digitalWrite(Rpin,LOW);
-
-    
-
+  digitalWrite(Rpin,LOW);
 }

@@ -1,23 +1,3 @@
-/*
-  Sleep RTC Alarm for Arduino Zero
-
-  Demonstrates the use an alarm to wake up an Arduino zero from Standby mode
-
-  This example code is in the public domain
-
-  http://arduino.cc/en/Tutorial/SleepRTCAlarm
-
-  created by Arturo Guadalupi
-  17 Nov 2015
-  modified 
-  01 Mar 2016
-  
-  NOTE:
-  If you use this sketch with a MKR1000 you will see no output on the serial monitor.
-  This happens because the USB clock is stopped so it the USB connection is stopped too.
-  **To see again the USB port you have to double tap on the reset button!**
-*/
-
 #include <RTCZero.h>
 #include <SPI.h>
 #include <SD.h>
@@ -75,13 +55,15 @@ void setup()
   dataString += " ";
   digitalWrite(laser, HIGH);
   delay(3000);
-  
+
+ dataString += "|";
 
   for(int i = 0;i<10;i++){
       dataString += String(analogRead(sensor)) + ",";
       delay(10);
       }
 
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
   
   rtc.begin();
 
